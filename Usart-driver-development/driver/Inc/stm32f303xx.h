@@ -16,7 +16,8 @@
 
 
 #include <stdint.h>
-#define __vo volatile;
+#include <stdio.h>
+
 
 
 
@@ -173,16 +174,16 @@
 
 typedef struct
 {
-	__vo uint32_t MODER;                    // GPIO port mode register, Offset: 0x00
-	__vo uint32_t OTYPER;                   // GPIO port output type register, Offset: 0x04
-	__vo uint32_t OSPEEDR;                  // GPIO port output speed register, Offset: 0x08
-	__vo uint32_t PUPDR;                    // GPIO port pull-up/pull-down register, Offset: 0x0C
-	__vo uint32_t IDR;						// GPIO port input data register, Offset: 0x10
-	__vo uint32_t ODR;                      // GPIO port output data register, Offset: 0x14
-	__vo uint32_t BSRR;                     // GPIO port bit set/reset register, Offset: 0x18
-	__vo uint32_t LCKR;                     // GPIO port configuration lock register, Offset: 0x1C
-	__vo uint32_t AFR[2];                   // GPIO alternate function high register AFR[0], GPIO alternate function low register AFR[1]
-	__vo uint32_t BRR;                      // GPIO port bit reset register, Offset: 0x28
+	volatile uint32_t MODER;                    // GPIO port mode register, Offset: 0x00
+	volatile uint32_t OTYPER;                   // GPIO port output type register, Offset: 0x04
+	volatile uint32_t OSPEEDR;                  // GPIO port output speed register, Offset: 0x08
+	volatile uint32_t PUPDR;                    // GPIO port pull-up/pull-down register, Offset: 0x0C
+	volatile uint32_t IDR;						// GPIO port input data register, Offset: 0x10
+	volatile uint32_t ODR;                      // GPIO port output data register, Offset: 0x14
+	volatile uint32_t BSRR;                     // GPIO port bit set/reset register, Offset: 0x18
+	volatile uint32_t LCKR;                     // GPIO port configuration lock register, Offset: 0x1C
+	volatile uint32_t AFR[2];                   // GPIO alternate function high register AFR[0], GPIO alternate function low register AFR[1]
+	volatile uint32_t BRR;                      // GPIO port bit reset register, Offset: 0x28
 }GPIO_RegDef_t;
 
 
@@ -190,19 +191,19 @@ typedef struct
 
 typedef struct
 {
-	__vo uint32_t CR;                       // Clock control register, Offset: 0x00
-	__vo uint32_t CFGR;                     // Clock configuration register, Offset: 0x04
-	__vo uint32_t CIR;                      // Clock interrupt register, Offset: 0x08
-	__vo uint32_t APB2RSTR;                 // APB2 peripheral reset register, Offset: 0x0C
-	__vo uint32_t APB1RSTR;				    // APB1 peripheral reset register, Offset: 0x10
-	__vo uint32_t AHBENR;                   // AHB peripheral clock enable register, Offset: 0x14
-	__vo uint32_t APB2ENR;                  // APB2 peripheral clock enable register, Offset: 0x18
-	__vo uint32_t APB1ENR;                  // APB1 peripheral clock enable register, Offset: 0x1C
-	__vo uint32_t BDCR;                     // RTC domain control register, Offset: 0x20
-	__vo uint32_t CSR;                      // Control/status register, Offset: 0x24
-	__vo uint32_t AHBRSTR;                  // AHB peripheral reset register, Offset: 0x28
-	__vo uint32_t CFGR2;					// Clock configuration register 2, Offset: 0x2C
-	__vo uint32_t CFGR3;					// Clock configuration register 3, Offset: 0x30
+	volatile uint32_t CR;                       // Clock control register, Offset: 0x00
+	volatile uint32_t CFGR;                     // Clock configuration register, Offset: 0x04
+	volatile uint32_t CIR;                      // Clock interrupt register, Offset: 0x08
+	volatile uint32_t APB2RSTR;                 // APB2 peripheral reset register, Offset: 0x0C
+	volatile uint32_t APB1RSTR;				    // APB1 peripheral reset register, Offset: 0x10
+	volatile uint32_t AHBENR;                   // AHB peripheral clock enable register, Offset: 0x14
+	volatile uint32_t APB2ENR;                  // APB2 peripheral clock enable register, Offset: 0x18
+	volatile uint32_t APB1ENR;                  // APB1 peripheral clock enable register, Offset: 0x1C
+	volatile uint32_t BDCR;                     // RTC domain control register, Offset: 0x20
+	volatile uint32_t CSR;                      // Control/status register, Offset: 0x24
+	volatile uint32_t AHBRSTR;                  // AHB peripheral reset register, Offset: 0x28
+	volatile uint32_t CFGR2;					// Clock configuration register 2, Offset: 0x2C
+	volatile uint32_t CFGR3;					// Clock configuration register 3, Offset: 0x30
 }RCC_RegDef_t;
 
 
@@ -231,16 +232,16 @@ typedef struct
 
 typedef struct
 {
-	__vo uint32_t CR1;                      // Control register1, Offset: 0x00
-	__vo uint32_t CR2;                      // Control register2, Offset: 0x04
-	__vo uint32_t CR3;                      // Control register3, Offset: 0x08
-	__vo uint32_t BRR;                      // Baud rate register, Offset: 0x0C
-	__vo uint32_t GTPR;						// Guard time and prescaler register, Offset: 0x10
-	__vo uint32_t RTOR;                     // Receiver timeout register, Offset: 0x14
-	__vo uint32_t RQR;                      // Request register, Offset: 0x18
-	__vo uint32_t ISR;                      // Interrupt and status register, Offset: 0x1C
-	__vo uint32_t RDR;                      // Receive data register, Offset: 0x20
-	__vo uint32_t TDR;                      // Transmit data register, Offset: 0x24
+	volatile uint32_t CR1;                      // Control register1, Offset: 0x00
+	volatile uint32_t CR2;                      // Control register2, Offset: 0x04
+	volatile uint32_t CR3;                      // Control register3, Offset: 0x08
+	volatile uint32_t BRR;                      // Baud rate register, Offset: 0x0C
+	volatile uint32_t GTPR;						// Guard time and prescaler register, Offset: 0x10
+	volatile uint32_t RTOR;                     // Receiver timeout register, Offset: 0x14
+	volatile uint32_t RQR;                      // Request register, Offset: 0x18
+	volatile uint32_t ISR;                      // Interrupt and status register, Offset: 0x1C
+	volatile uint32_t RDR;                      // Receive data register, Offset: 0x20
+	volatile uint32_t TDR;                      // Transmit data register, Offset: 0x24
 }USART_RegDef_t;
 
 

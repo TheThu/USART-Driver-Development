@@ -47,7 +47,7 @@ void USART_Init(USART_Handle_t *pUSARTHandle){
 		// Set World length M1 Bit-field
 		pUSARTHandle->pUSARTx->CR1 = tempreg;
 
-	if(pUSARTHandle->USART_Config.USART_ParityControl == USART_PARITY_EN_EVEN);
+	if(pUSARTHandle->USART_Config.USART_ParityControl == USART_PARITY_EN_EVEN)
 	{
 		// Mask out Parity Control Enable (PCE)Bit-field
 		tempreg |= (1 << USART_CR1_PCE);
@@ -97,10 +97,15 @@ void USART_Init(USART_Handle_t *pUSARTHandle){
 //ToDo Enable Baudrate
 
 
+
+
+
+
+
 }
 
 
-USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
+void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
 {
 
 	if(EnorDi == ENABLE)
@@ -137,3 +142,84 @@ USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
 	}
 
 }
+
+
+// Data, Send and Receive
+void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t Len)
+{
+	uint16_t *pData;
+
+	for(uint32_t i = 0;i < Len;i++)
+	{
+		// implement the code to wait until TXE flag is set in the SR
+		while(!USART_GetFlagStatus(pUSARTHandle->pUSARTx,USART_FLAG_TXE));
+
+		if(pUSARTHandle->USART_Config.USART_Wordlength == USART_WORDLEN_9BITS)
+		{
+			// if 9BIT, load the DR with 2bytes masking the bits other  that first 9 bits
+			pData = (uint16_t*)pTxBuffer;
+			pUSARTHandle->pUSARTx->TDR = *pData & 0x01FF;
+
+			if(pUSARTHandle->USART_Config.USART_ParityControl == USART_PARITY_EN_DISABLE)
+			{
+				// No Parity is used in this transfer, so 9Bits of data will be sent
+				pTxBuffer++;
+				pTxBuffer++;
+
+			}
+			else
+			{
+				/* Parity bit is used in this transfer, so 8 Bits of user data will be sent
+                   The 9th Bit will be replaced by parity bit by the hardware
+				 */
+				pTxBuffer++;
+			}
+		}
+
+		else
+		{
+			// Masking out 8 Bits
+			pUSARTHandle->pUSARTx->TDR = *pTxBuffer & 0x00FF;
+			// increment the buffer adress
+			pTxBuffer++;
+		}
+
+//Implement the code to wait till TC flag is set in the SR
+		while(!USART_GetFlagStatus(pUSARTHandle->pUSARTx,USART_FLAG_TC));
+	}
+
+}
+
+
+
+
+
+
+uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint32_t FlagName)
+{
+			if(FlagName == USART_FLAG_TXE)
+			{
+				// Set Transmission register empty flag
+				pUSARTx->ISR |= (1<<USART_FLAG_TXE);
+				return 1;
+			}
+			else if(FlagName == USART_FLAG_TC)
+			{
+				// Set Transmission complete flag
+				pUSARTx->ISR |= (1<<USART_FLAG_TC);
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
+}
+
+
+
+
+
+
+
+
+

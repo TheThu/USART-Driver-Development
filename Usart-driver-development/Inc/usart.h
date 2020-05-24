@@ -10,7 +10,8 @@
 
 #include <stdint.h>
 #include <stm32f303xx.h>
-
+#include <stdbool.h>
+#include <stdio.h>
 // USART_Mode
 
 #define USART_MODE_ONLY_TX 0
@@ -73,7 +74,9 @@
 #define USART_CR3_CTSE						8 	// CTS mode enabled, data is only transmitted when the CTS input is asserted (tied to 0). Ifthe CTS input is de-asserted while data is being transmitted, then the transmission iscompleted before stopping. If data is written into the data
 #define USART_CR3_RTSE						9 	// RTS Enable RTS output enabled, data is only requested when there is space in the receive buffer. The transmission of data is expected to cease after the current character has been transmitted.The RTS output is asserted (pulled to 0) when data can be received.
 
-
+// Flags for Transmission
+#define USART_FLAG_TC						6   // USART Transmission complete flag
+#define USART_FLAG_TXE						7	// Transmit data register empty flag
 
 
 // Configuration for USARTx peripheral
@@ -112,8 +115,8 @@ void USART_DeInit(USART_RegDef_t *pUSARTx);
 
 
 // Data, Send and Receive
-void USART_SendData(USART_RegDef_t *pUSARTx, uint8_t *pTxBuffer, uint32_t Len);
-void USART_ReceiveData(USART_RegDef_t *pUSARTx, uint8_t *pRxBuffer, uint32_t Len);
+void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t Len);
+void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t Len);
 uint8_t USART_SendDataIT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t Len);
 uint8_t USART_ReceiveDataIT(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t Len);
 
