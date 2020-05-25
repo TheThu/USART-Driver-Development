@@ -74,9 +74,11 @@
 #define USART_CR3_CTSE						8 	// CTS mode enabled, data is only transmitted when the CTS input is asserted (tied to 0). Ifthe CTS input is de-asserted while data is being transmitted, then the transmission iscompleted before stopping. If data is written into the data
 #define USART_CR3_RTSE						9 	// RTS Enable RTS output enabled, data is only requested when there is space in the receive buffer. The transmission of data is expected to cease after the current character has been transmitted.The RTS output is asserted (pulled to 0) when data can be received.
 
-// Flags for Transmission
+// Flags for Transmission and Receptione
 #define USART_FLAG_TC						6   // USART Transmission complete flag
-#define USART_FLAG_TXE						7	// Transmit data register empty flag
+#define USART_FLAG_TXE						7	// USART Transmit data register empty flag
+#define USART_FLAG_RXE					    5   // USART Read data register not empty
+
 
 
 // Configuration for USARTx peripheral

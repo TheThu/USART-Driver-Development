@@ -192,6 +192,47 @@ void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t L
 
 
 
+void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t Len)
+{
+	// Loop over until "Len" number of bytes are transferred
+	for(uint32_t i = 0; i < Len; i++)
+	{
+	// Implement the code to wait until RXNE flag is set in the SR
+		while(!USART_GetFlagStatus(pUSARTHandle->pUSARTx,USART_FLAG_TXE));
+
+	// Check the USART Wordlength to decide whether we are going to receive 9bit of data in a frame or 8 Bit
+		if(pUSARTHandle->USART_Config.USART_Wordlength == USART_WORDLEN_9BITS)
+		{
+			if(pUSARTHandle->USART_Config.USART_ParityControl == USART_PARITY_EN_DISABLE)
+			{
+				// No Parity is used, all 9 bits will be masked
+				*(uint16_t*)pRxBuffer =  pUSARTHandle->pUSARTx->RDR & (uint16_t)0x1FF;
+				pRxBuffer++;
+				pRxBuffer++;
+
+				// Sollte nicht 8 bit pointer sein und deshalb zwei incrementieren?
+			}
+
+		}
+
+		else
+		{
+			*pRxBuffer = pUSARTHandle->pUSARTx->RDR & (uint8_t)0xFF;
+			pRxBuffer++;
+
+		}
+
+
+
+
+
+
+
+	};
+
+}
+
+
 
 
 
@@ -203,12 +244,20 @@ uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint32_t FlagName)
 				pUSARTx->ISR |= (1<<USART_FLAG_TXE);
 				return 1;
 			}
+
 			else if(FlagName == USART_FLAG_TC)
 			{
 				// Set Transmission complete flag
 				pUSARTx->ISR |= (1<<USART_FLAG_TC);
 				return 1;
 			}
+
+			else if(FlagName == USART_FLAG_RXE)
+			{
+				// Set Receive data register empty flag
+				pUSARTx->ISR |= (1<<USART_FLAG_RXE);
+			}
+
 			else
 			{
 				return 0;
