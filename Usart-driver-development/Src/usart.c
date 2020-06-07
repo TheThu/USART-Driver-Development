@@ -94,7 +94,9 @@ void USART_Init(USART_Handle_t *pUSARTHandle){
 		pUSARTHandle->pUSARTx->CR3 = tempreg;
 	}
 
-//ToDo Enable Baudrate
+//ToDo Enable Baudrate Tx/Rx = fCK/(8x (2-OVER8) x USARTDIV)
+	// USARTDIV = fpCLK / 8 x BR x 100
+
 
 
 
@@ -149,7 +151,7 @@ void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t L
 {
 	uint16_t *pData;
 
-	for(uint32_t i = 0;i < Len;i++)
+	for(uint32_t i = 0;i < Len; i++)
 	{
 		// implement the code to wait until TXE flag is set in the SR
 		while(!USART_GetFlagStatus(pUSARTHandle->pUSARTx,USART_FLAG_TXE));
@@ -222,12 +224,6 @@ void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_
 
 		}
 
-
-
-
-
-
-
 	};
 
 }
@@ -264,6 +260,21 @@ uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint32_t FlagName)
 			}
 }
 
+
+void USART_SetBaudRate(USART_RegDef_t *pUSARTx,uint32_t BaudRate)
+{
+	// Variable to hold the APB clock
+	uint32_t PCLKx;
+
+	uint32_t usartdiv;
+
+	// Variables to hold Manitssa and Fraction values
+	uint32_t M_part, F_part;
+
+	uint32_t tempred = 0;
+
+
+}
 
 
 

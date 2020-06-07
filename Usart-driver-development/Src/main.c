@@ -7,44 +7,24 @@
 
 */
 #include <main.h>
-
-    STUDENT_INFO_t students[2] = {
-    		{333527,"The Thu Tran","Electrical Engineering","19/10/89",10},{333527,"Tekey Tran","Mechanical","19/10/89",12}
-    };
-
-    void display_all_records(STUDENT_INFO_t *students,u_int32_t  length)
-    {
-
-		for(u_int32_t i = 0; i < length; i++)
-		{
-				printf("Matrikelnummer: %d \n",students->Matrikelnummer);
-				printf("Name: %s \n",students->Name);
-				printf("Studienfach: %s \n",students->Studienfach);
-				printf("Semesterzahl: %d \n",students->Semesterzahl);
-				printf("Geburtsjahr: %s \n",students->Geburtsjahr);
-				students++;
-		};
-    };
-
-   	void delete_record(STUDENT_INFO_t *students)
-   	{
+#include <stm32f303xx.h>
 
 
-   	};
-
-
-   	void add_record(STUDENT_INFO_t *students)
-   	{
-
-   	};
+#define RCC_CFGR_REG_OFFSET		    0x04
+#define RCC_CFGR_REG_ADDR		    RCC_BASEADDR + RCC_CFGR_REG_OFFSET
 
 
 
 
 int main(void)
 {
-    u_int32_t length = 2;
-	display_all_records(students,length);
-	for(;;);
+
+	uint32_t *pRccCfgrReg = (uint32_t*) RCC_CFGR_REG_ADDR;
+	// 1. Configure RCC_CFGR register
+	*pRccCfgrReg |= (0x05 << 24);
+	// a) Enable the perpheral clock for GPIOA Peripheral
+
+
+	while(1);
 };
 

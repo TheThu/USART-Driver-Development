@@ -74,10 +74,13 @@
 #define USART_CR3_CTSE						8 	// CTS mode enabled, data is only transmitted when the CTS input is asserted (tied to 0). Ifthe CTS input is de-asserted while data is being transmitted, then the transmission iscompleted before stopping. If data is written into the data
 #define USART_CR3_RTSE						9 	// RTS Enable RTS output enabled, data is only requested when there is space in the receive buffer. The transmission of data is expected to cease after the current character has been transmitted.The RTS output is asserted (pulled to 0) when data can be received.
 
-// Flags for Transmission and Receptione
+// Flags for Transmission and Reception
 #define USART_FLAG_TC						6   // USART Transmission complete flag
 #define USART_FLAG_TXE						7	// USART Transmit data register empty flag
 #define USART_FLAG_RXE					    5   // USART Read data register not empty
+
+
+
 
 
 
@@ -108,6 +111,9 @@ typedef struct
 // Peripheral Clock setup
 void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi);
 
+// Calculate Baudrate
+
+void USART_SetBaudRate(USART_RegDef_t *pUSARTx,uint32_t BaudRate);
 
 
 // Init and DeInit
@@ -134,6 +140,7 @@ void USART_ClearFlag(USART_RegDef_t *pUSARTx, uint16_t StatusFlagName);
 
 //  Application Callback
 void USART_ApplicationEventCallback(USART_Handle_t *pUSARTHandle, uint8_t AppEv);
+
 
 
 
