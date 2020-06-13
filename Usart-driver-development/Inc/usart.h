@@ -35,6 +35,7 @@
 #define USART_STD_BAUD_3M			    	3000000
 
 
+
 // possible options for USART_NoOfStopBits
 #define USART_STOPBITS_1					0
 #define USART_STOPBITS_0_5					1
@@ -66,6 +67,7 @@
 #define USART_CR1_PS						9   // Parity Selection Bit-field
 #define USART_CR1_PCE						10
 #define USART_CR1_PS						9   // Parity Selection Bit-field
+#define USART_CR1_OVER8 					15  // Oversampling Bit field
 
 // Macros for Register Bit-fields for CR2-Register
 #define USART_CR2_STOP						12 	// Stop bits

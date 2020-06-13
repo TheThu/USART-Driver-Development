@@ -113,11 +113,11 @@ void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
 		{
 			USART3_PCCK_EN();
 		}
-		else if(pUSARTx == UART4)
+		else if(pUSARTx == USART4)
 		{
 			UART4_PCCK_EN();
 		}
-		else if(pUSARTx == UART5)
+		else if(pUSARTx == USART5)
 		{
 			UART5_PCCK_EN();
 		}
@@ -260,7 +260,7 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx,uint32_t BaudRate)
 	// Variables to hold Manitssa and Fraction values
 	uint32_t M_part, F_part;
 
-	uint32_t tempred = 0;
+	uint32_t tempreg = 0;
 
 	if(pUSARTx == USART1)
 	{
@@ -273,15 +273,15 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx,uint32_t BaudRate)
 	}
 
 	// Check for OVER8 = 1
-	if(pUSARTx->CR1 & (1 << TODO))
+	if(pUSARTx->CR1 & (1 << USART_CR1_OVER8))
 	{
 		//OVER8 = 1, over sampling by 8, dealing with integer
-		usartdiv = 100 * PCLKx/(8 * Baudrate);
+		usartdiv = 100 * PCLKx/(8 * BaudRate);
 	}
 	else
 	{
 		// OVER8 = 0, over sampling by 16
-		usartdiv = 100 * PCLKx/(16 * Baudrate);
+		usartdiv = 100 * PCLKx/(16 * BaudRate);
 
 	}
 
@@ -298,12 +298,12 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx,uint32_t BaudRate)
 	if(pUSARTx->CR1 & (1<< USART_CR1_OVER8))
 	{
 		//Over8 = 1, over sampling by 8
-		F_part = ( ( (F_part * TODO) + 50 ) / 100 ) & ((uint8_t)0x07);
+		F_part = ( ( (F_part * usartdiv) + 50 ) / 100 ) & ((uint8_t)0x07);
 	}
 	else
 	{
 		//over sampling by 16
-		F_part = ( ( (F_part * TODO) + 50 ) / 100 ) & ((uint8_t)0x07);
+		F_part = ( ( (F_part * usartdiv) + 50 ) / 100 ) & ((uint8_t)0x07);
 	}
 
 	// place the fractional part in appropriate bit position, refer USART_BRR

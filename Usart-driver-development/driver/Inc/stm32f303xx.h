@@ -255,7 +255,7 @@ typedef struct
 // Typecasted to typedef struc RCC_RegDef_t*
 
 #define RCC 				((RCC_RegDef_t*)RCC_BASEADDR)
-#define USART1_PCCK_EN() 	(RCC->APB2ENR) |= (1 << 14))
+#define USART1_PCCK_EN() 	((RCC->APB2ENR) |= (1 << 14))
 #define USART2_PCCK_EN() 	(RCC->APB1ENR |= (1 << 17))
 #define USART3_PCCK_EN() 	(RCC->APB1ENR |= (1 << 18))
 #define UART4_PCCK_EN() 	(RCC->APB1ENR |= (1 << 19))
