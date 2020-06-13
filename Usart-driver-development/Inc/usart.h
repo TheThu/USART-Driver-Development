@@ -62,7 +62,7 @@
 // Macros for Register Bit-fields for CR1-Register
 #define USART_CR1_RE						2 	// Read Enable Bit-field
 #define USART_CR1_TE						3 	// Transmit Enable Bit-field
-#define USART_CR1_M1						28  // Wordlength Bit-field
+#define USART_CR1_M0						12  // Wordlength Bit-field, M0= 0 1 Startbits 8 data bits , 1 Startbits 9 data bits...
 #define USART_CR1_PS						9   // Parity Selection Bit-field
 #define USART_CR1_PCE						10
 #define USART_CR1_PS						9   // Parity Selection Bit-field
@@ -137,45 +137,8 @@ void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi);
 uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint32_t FlagName);
 void USART_ClearFlag(USART_RegDef_t *pUSARTx, uint16_t StatusFlagName);
 
-
 //  Application Callback
 void USART_ApplicationEventCallback(USART_Handle_t *pUSARTHandle, uint8_t AppEv);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #endif /* USART_H_ */

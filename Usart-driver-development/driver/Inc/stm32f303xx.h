@@ -226,8 +226,8 @@ typedef struct
 #define USART1 							    (USART_RegDef_t*)USART1_BASEADDR
 #define USART2 							    (USART_RegDef_t*)USART2_BASEADDR
 #define USART3 							    (USART_RegDef_t*)USART3_BASEADDR
-#define UART4 							    (USART_RegDef_t*)UART4_BASEADDR
-#define UART5 							    (USART_RegDef_t*)UART5_BASEADDR
+#define USART4 							    (USART_RegDef_t*)UART4_BASEADDR
+#define USART5 							    (USART_RegDef_t*)UART5_BASEADDR
 
 
 typedef struct

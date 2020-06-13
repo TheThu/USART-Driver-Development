@@ -41,10 +41,10 @@ void USART_Init(USART_Handle_t *pUSARTHandle){
 	}
 
 		//	Implement the code to enable the Word length configuration item
-		// Mask out word length (M1) Bit-field
-		tempreg|= pUSARTHandle->USART_Config.USART_Wordlength << USART_CR1_M1;
+		// Mask out word length (M0) Bit-field
+		tempreg|= pUSARTHandle->USART_Config.USART_Wordlength << USART_CR1_M0;
 
-		// Set World length M1 Bit-field
+		// Set World length M0 Bit-field
 		pUSARTHandle->pUSARTx->CR1 = tempreg;
 
 	if(pUSARTHandle->USART_Config.USART_ParityControl == USART_PARITY_EN_EVEN)
@@ -93,17 +93,6 @@ void USART_Init(USART_Handle_t *pUSARTHandle){
 		// Set RTSE-Bitfield
 		pUSARTHandle->pUSARTx->CR3 = tempreg;
 	}
-
-//ToDo Enable Baudrate Tx/Rx = fCK/(8x (2-OVER8) x USARTDIV)
-	// USARTDIV = fpCLK / 8 x BR x 100
-
-
-
-
-
-
-
-
 }
 
 
@@ -114,23 +103,23 @@ void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
 	{
 		if(pUSARTx == USART1)
 		{
-			//USART1_PCCK_EN();
+			USART1_PCCK_EN();
 		}
 		else if(pUSARTx == USART2)
 		{
-			//USART2_PCCK_EN();
+			USART2_PCCK_EN();
 		}
 		else if(pUSARTx == USART3)
 		{
-			//USART3_PCCK_EN();
+			USART3_PCCK_EN();
 		}
 		else if(pUSARTx == UART4)
 		{
-			//UART4_PCCK_EN();
+			UART4_PCCK_EN();
 		}
 		else if(pUSARTx == UART5)
 		{
-			//UART5_PCCK_EN();
+			UART5_PCCK_EN();
 		}
 		else
 		{
@@ -272,6 +261,55 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx,uint32_t BaudRate)
 	uint32_t M_part, F_part;
 
 	uint32_t tempred = 0;
+
+	if(pUSARTx == USART1)
+	{
+		// Usart1 hanging on PCLK1
+		PCLKx = RCC_GetPCLK1Value();
+	}
+	else
+	{
+		PCLKx = RCC_GetPCLK2Value();
+	}
+
+	// Check for OVER8 = 1
+	if(pUSARTx->CR1 & (1 << TODO))
+	{
+		//OVER8 = 1, over sampling by 8, dealing with integer
+		usartdiv = 100 * PCLKx/(8 * Baudrate);
+	}
+	else
+	{
+		// OVER8 = 0, over sampling by 16
+		usartdiv = 100 * PCLKx/(16 * Baudrate);
+
+	}
+
+	// Calculate the Mantissa part
+	M_part = usartdiv/100;
+
+	// Place the Mantissa part in appropriate bit position, refer USART_BRR [15:4] Bit-fields
+	tempreg |= M_part << 4;
+
+	// Extract the fraction part
+	F_part = (usartdiv - (M_part * 100));
+
+	// calculate the final fractional
+	if(pUSARTx->CR1 & (1<< USART_CR1_OVER8))
+	{
+		//Over8 = 1, over sampling by 8
+		F_part = ( ( (F_part * TODO) + 50 ) / 100 ) & ((uint8_t)0x07);
+	}
+	else
+	{
+		//over sampling by 16
+		F_part = ( ( (F_part * TODO) + 50 ) / 100 ) & ((uint8_t)0x07);
+	}
+
+	// place the fractional part in appropriate bit position, refer USART_BRR
+	tempreg |= F_part;
+	//copy the value of tempreg in to BRR register
+	pUSARTx->BRR = tempreg;
 
 
 }
