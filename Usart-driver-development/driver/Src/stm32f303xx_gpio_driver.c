@@ -93,16 +93,65 @@ void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 // Init and De-init
 void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 {
+	uint32_t temp; // temp register
 	// Configure the mode of gpio pin
+	if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG)
+	{
+
+
+		// The two because of 2 Bit-field is used to configure the Pin Mode MODER[1:0] for gpio pin 0 left shiftet gpio pin 1 and so on...
+		temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+
+		// Clear Bit-fields for gpios before setting Bit-fields
+		pGPIOHandle->pGPIOx->MODER &= ~(0x3 << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+		// Set Bit-fields
+		pGPIOHandle->pGPIOx->MODER = temp;
+
+	}
+	else
+	{
+		// TODO Interupt Mode
+	}
+
 
 	// Configure the speed
+	temp = 0;
+
+	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeed <= (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+
+	// Clear Bit-fields for gpios before setting Bit-fields
+	pGPIOHandle->pGPIOx->OSPEEDR &= ~(0x3 << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+	// Set Bitfields
+	pGPIOHandle->pGPIOx->OSPEEDR |= temp;
 
 	// Configure the pupd settings
+	temp = 0;
+	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinPuPdControl <= (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+	pGPIOHandle->pGPIOx->PUPDR |= temp;
 
 	// Configure the optype
+	temp = 0;
+	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType <= (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+	pGPIOHandle->pGPIOx->OTYPER &= ~(1 << (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+	pGPIOHandle->pGPIOx->OTYPER |= temp;
 
 	// Configure the alternate functionality
+	if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_ALTFCT)
+	{
+		// Configure alternate function register
+		uint32_t temp1, temp2;
 
+		// calculate whether to use AFR[0] or AFR[1]
+		temp1 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber/ 8;
+		// calculate with Pin
+		temp2 =  pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 8;
+
+		// times 4 because 4 Bit-field for alternate function mode
+		pGPIOHandle->pGPIOx->AFR[temp1] &= ~(0xF << (4 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+		pGPIOHandle->pGPIOx->AFR[temp1] |= ( pGPIOHandle->GPIO_PinConfig.GPIO_PinAltFunMode << (4 * temp2));
+
+
+	}
 
 }
 

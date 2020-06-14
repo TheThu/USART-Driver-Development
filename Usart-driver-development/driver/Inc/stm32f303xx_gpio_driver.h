@@ -16,12 +16,14 @@
 
 typedef struct
 {
+
 	uint8_t GPIO_PinNumber;				/* Possible values from @GPIO_PIN_NUMBER */
 	uint8_t GPIO_PinMode;				/* Possible values from @GPIO_PIN_MODES */
 	uint8_t GPIO_PinSpeed;				/* Possible values from @GPIO_PIN_SPEEDS */
 	uint8_t GPIO_PinPuPdControl;		/* Possible values from @GPIO_PIN_PuPd */
 	uint8_t GPIO_PinOPType;				/* Possible values from @GPIO_PIN_OPType */
 	uint8_t GPIO_PinAltFunMode;
+
 }GPIO_PinConfig;
 
 /*
@@ -63,7 +65,7 @@ typedef struct
 
 #define GPIO_NO_PUPD		0
 #define GPIO_NO_PU			1
-#define GPIO_NO_PUPD		2
+#define GPIO_NO_PD			2
 
 /*
  * @GPIO_PIN_NUMBER
@@ -87,7 +89,7 @@ typedef struct
 #define GPIO_PIN13			13
 #define GPIO_PIN14			14
 #define GPIO_PIN15			15
-#define GPIO_PIN15			16
+
 
 
 
@@ -100,6 +102,7 @@ typedef struct
 	// pointer to hold the baseadrres of the GPIO peripheral
 	GPIO_RegDef_t *pGPIOx; // holds the base adress of the GPIO port to which the pin belongs
     GPIO_PinConfig GPIO_PinConfig;
+
 }GPIO_Handle_t;
 
 #endif /* INC_STM32F303XX_GPIO_DRIVER_H_ */
