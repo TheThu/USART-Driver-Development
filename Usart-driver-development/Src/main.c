@@ -9,9 +9,12 @@
 #include <main.h>
 #include <stm32f303xx.h>
 
+void delay(void)
+{
+	for(uint32_t i = 0; i < 500000; i++);
+}
 
-#define RCC_CFGR_REG_OFFSET		    0x04
-#define RCC_CFGR_REG_ADDR		    RCC_BASEADDR + RCC_CFGR_REG_OFFSET
+
 
 
 
@@ -19,12 +22,30 @@
 int main(void)
 {
 
-	uint32_t *pRccCfgrReg = (uint32_t*) RCC_CFGR_REG_ADDR;
-	// 1. Configure RCC_CFGR register
-	*pRccCfgrReg |= (0x05 << 24);
-	// a) Enable the perpheral clock for GPIOA Peripheral
+   GPIO_Handle_t GPIO_LED;
+   GPIO_LED.pGPIOx = GPIOA;
+   GPIO_LED.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN5;
+   GPIO_LED.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
+   GPIO_LED.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
+   GPIO_LED.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+   GPIO_LED.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PD;
+
+     GPIOA_PCLK_EN();
+   // GPIOB_PCLK_EN();
+   //GPIO_PeriClockControl(GPIOA, ENABLE);
+   GPIO_Init(&GPIO_LED);
+
+   while(1)
+   {
+	    GPIO_ToggleOutputPin(GPIOA, GPIO_PIN5);
+	   //GPIO_WriteToOutputPin(GPIOA, GPIO_PIN5, GPIO_PIN_SET);
+	   delay();
+   }
 
 
-	while(1);
+
+
+   return 0;
+
 };
 

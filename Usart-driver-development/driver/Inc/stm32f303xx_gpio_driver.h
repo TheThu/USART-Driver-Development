@@ -105,7 +105,7 @@ typedef struct
 
 }GPIO_Handle_t;
 
-#endif /* INC_STM32F303XX_GPIO_DRIVER_H_ */
+
 
 
 
@@ -137,7 +137,7 @@ void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
 void GPIO_IRQHandling(uint8_t PinNumber);
 
 
-
+#endif /* INC_STM32F303XX_GPIO_DRIVER_H_ */
 
 
 

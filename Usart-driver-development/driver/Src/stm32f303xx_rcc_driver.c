@@ -78,7 +78,6 @@ uint32_t RCC_GetPCLK1Value(void)
 
 
 
-
 uint32_t RCC_GetPCLK2Value(void)
 {
 	uint32_t pclk2, SystemClk, temp;

@@ -7,8 +7,7 @@
 
 
 #include <stm32f303xx_gpio_driver.h>
-#include <stm32f303xx_rcc_driver.h>
-#include <stm32f303xx.h>
+
 
 
 
@@ -68,12 +67,14 @@ void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 		}
 		else
 		{
+
 			// ToDO disable Clk
 		}
 
 	}
 
 }
+
 
 
 /*********************************************************************
