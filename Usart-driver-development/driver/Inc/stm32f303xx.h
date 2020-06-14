@@ -224,6 +224,21 @@ typedef struct
 
 
 
+/*
+ * Clock Enable Macros for GPIOx peripherals
+ */
+
+#define GPIOA_REG_RESET() do{ (RCC->AHBRSTR |= (1 << 17)); (RCC->AHBRSTR &= ~(1 << 17)); }while(0)
+#define GPIOB_REG_RESET() do{ (RCC->AHBRSTR |= (1 << 18)); (RCC->AHBRSTR &= ~(1 << 18)); }while(0)
+#define GPIOC_REG_RESET() do{ (RCC->AHBRSTR |= (1 << 19)); (RCC->AHBRSTR &= ~(1 << 19)); }while(0)
+#define GPIOD_REG_RESET() do{ (RCC->AHBRSTR |= (1 << 20)); (RCC->AHBRSTR &= ~(1 << 20)); }while(0)
+#define GPIOE_REG_RESET() do{ (RCC->AHBRSTR |= (1 << 21)); (RCC->AHBRSTR &= ~(1 << 21)); }while(0)
+#define GPIOF_REG_RESET() do{ (RCC->AHBRSTR |= (1 << 22)); (RCC->AHBRSTR &= ~(1 << 22)); }while(0)
+#define GPIOG_REG_RESET() do{ (RCC->AHBRSTR |= (1 << 23)); (RCC->AHBRSTR &= ~(1 << 23)); }while(0)
+#define GPIOH_REG_RESET() do{ (RCC->AHBRSTR |= (1 << 16)); (RCC->AHBRSTR &= ~(1 << 16)); }while(0)
+
+
+
 // Typecasted to typedef struct RCC_RegDef_t*
 #define USART1 							    (USART_RegDef_t*)USART1_BASEADDR
 #define USART2 							    (USART_RegDef_t*)USART2_BASEADDR

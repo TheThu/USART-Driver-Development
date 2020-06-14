@@ -169,7 +169,47 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
  */
 
 // Can be take care by the RCC AHB1 peripheral reset register for instance GPIOA RST, must not be set individually
-void GPIO_DeInit(GPIO_RegDef_t *pGPIOx);
+void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
+{
+
+	if(pGPIOx == GPIOA)
+			{
+				GPIOA_REG_RESET();
+			}
+			else if(pGPIOx == GPIOB)
+			{
+				GPIOB_REG_RESET();
+			}
+			else if(pGPIOx == GPIOC)
+			{
+				GPIOC_REG_RESET();
+			}
+			else if(pGPIOx == GPIOD)
+			{
+				GPIOD_REG_RESET();
+			}
+			else if(pGPIOx == GPIOE)
+			{
+				GPIOE_REG_RESET();
+			}
+			else if(pGPIOx == GPIOF)
+			{
+				GPIOF_REG_RESET();
+			}
+			else if(pGPIOx== GPIOG)
+			{
+				GPIOG_REG_RESET();
+			}
+			else if(pGPIOx == GPIOH)
+			{
+				GPIOH_REG_RESET();
+			}
+			else
+			{
+				// ToDO disable Clk
+			}
+
+}
 
 
 
