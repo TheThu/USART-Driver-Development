@@ -222,13 +222,19 @@ void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
  * @param[in]         - base address of gpio peripheral
  * @param[in]         - PinNumber
  *
- * @return            -  boolean (uint8_t)
+ * @return            -  boolean (uint8_t), zero or one
  *
  * @Note              -  none
  */
 
 // Data read and write
-uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
+uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
+{
+	uint8_t value;
+	value = (uint8_t )((pGPIOx->IDR >> PinNumber) & 0x1);
+	return value;
+
+}
 
 
 /*********************************************************************
@@ -245,7 +251,13 @@ uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
  */
 
 // How long is a Port? 16 Pins
-uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx);
+uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx)
+{
+	uint16_t value;
+	value = (uint16_t)pGPIOx->IDR;
+	return value;
+
+}
 
 
 
@@ -263,7 +275,20 @@ uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx);
  * @Note              -  none
  */
 
-void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Value);
+void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Value)
+{
+	if(Value == GPIO_PIN_SET)
+	{
+		// Write 1 to the output register at the bit filed corresponding to the pin Number
+		pGPIOx->ODR |= (1 << PinNumber);
+
+	}
+	else
+	{
+		// Write 0 to the output register at the bit filed corresponding to the pin Number
+		pGPIOx->ODR &= (1 << PinNumber);
+	}
+}
 
 
 /*********************************************************************
@@ -280,7 +305,12 @@ void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Val
  * @Note              -  none
  */
 
-void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value);
+void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value)
+{
+	// Put in whole in the entire Port register
+	pGPIOx->ODR = Value;
+
+}
 
 /*********************************************************************
  * @fn      		  - GPIO_ToggleOutputPin
@@ -296,7 +326,12 @@ void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value);
  * @Note              -  none
  */
 
-void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
+void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
+{
+	// Toggle pin at the corresponding Pin number
+	pGPIOx->ODR ^= (1 << PinNumber);
+
+}
 
 // IRQ Configuration and ISR handling
 
