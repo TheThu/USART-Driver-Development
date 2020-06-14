@@ -265,11 +265,22 @@ typedef struct
 
 
 
+/*
+ * Clock Enable Macros for GPIO Peripherals peripherals
+ */
+// Typecasted to typedef struc RCC_RegDef_t*
 
 
 
 
-
+#define GPIOA_PCLK_EN() 	((RCC->AHBENR) |= (1 << 17))
+#define GPIOB_PCLK_EN() 	((RCC->AHBENR) |= (1 << 18))
+#define GPIOC_PCLK_EN() 	((RCC->AHBENR) |= (1 << 19))
+#define GPIOD_PCLK_EN() 	((RCC->AHBENR) |= (1 << 20))
+#define GPIOE_PCLK_EN() 	((RCC->AHBENR) |= (1 << 21))
+#define GPIOF_PCLK_EN() 	((RCC->AHBENR) |= (1 << 22))
+#define GPIOG_PCLK_EN() 	((RCC->AHBENR) |= (1 << 23))
+#define GPIOH_PCLK_EN() 	((RCC->AHBENR) |= (1 << 16))
 
 
 

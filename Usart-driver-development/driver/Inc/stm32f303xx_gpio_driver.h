@@ -10,15 +10,89 @@
 
 #include <stm32f303xx.h>
 
+
+
+
+
 typedef struct
 {
-	uint8_t GPIO_PinNumber;
-	uint8_t GPIO_PinMode;
-	uint8_t GPIO_PinSpeed;
-	uint8_t GPIO_PinPuPdControl;
-	uint8_t GPIO_PonOPType;
+	uint8_t GPIO_PinNumber;				/* Possible values from @GPIO_PIN_NUMBER */
+	uint8_t GPIO_PinMode;				/* Possible values from @GPIO_PIN_MODES */
+	uint8_t GPIO_PinSpeed;				/* Possible values from @GPIO_PIN_SPEEDS */
+	uint8_t GPIO_PinPuPdControl;		/* Possible values from @GPIO_PIN_PuPd */
+	uint8_t GPIO_PinOPType;				/* Possible values from @GPIO_PIN_OPType */
 	uint8_t GPIO_PinAltFunMode;
 }GPIO_PinConfig;
+
+/*
+ * @GPIO_PIN_MODES
+ * GPIO pin possible modes
+ */
+
+#define GPIO_MODE_IN		0
+#define GPIO_MODE_OUT	 	1
+#define GPIO_MODE_ALTFCT	2
+#define GPIO_MODE_ANALOG	3
+
+// Interrupt falling edge and risiing edge and both
+#define GPIO_MODE_IT_FT		4
+#define GPIO_MODE_IT_RT		5
+#define GPIO_MODE_IT_RFT	6
+
+/*
+ * @GPIO_PIN_OPType
+ * GPIO pin possible output types
+ */
+
+#define GPIO_OP_TYPE_PP 	0
+#define GPIO_OP_TYPE_OD 	1
+
+/*
+ * @GPIO_PIN_SPEEDS
+ * GPIO pin possible output types
+ */
+
+#define GPIO_SPEED_LOW		0
+#define GPIO_SPEED_MEDIUM	1
+#define GPIO_SPEED_HIGH		3
+
+/*
+ * @GPIO_PIN_PuPd
+ * GPIO pin possible pull up and pull down configuration Macros
+ */
+
+#define GPIO_NO_PUPD		0
+#define GPIO_NO_PU			1
+#define GPIO_NO_PUPD		2
+
+/*
+ * @GPIO_PIN_NUMBER
+ * GPIO pin number configuration Macros
+ */
+
+
+#define GPIO_PIN0			0
+#define GPIO_PIN1			1
+#define GPIO_PIN2			2
+#define GPIO_PIN3			3
+#define GPIO_PIN4			4
+#define GPIO_PIN5			5
+#define GPIO_PIN6			6
+#define GPIO_PIN7			7
+#define GPIO_PIN8			8
+#define GPIO_PIN9			9
+#define GPIO_PIN10			10
+#define GPIO_PIN11			11
+#define GPIO_PIN12			12
+#define GPIO_PIN13			13
+#define GPIO_PIN14			14
+#define GPIO_PIN15			15
+#define GPIO_PIN15			16
+
+
+
+
+
 
 
 typedef struct

@@ -30,7 +30,50 @@
  */
 
 // Peripheral Clock setup
-void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi);
+void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
+{
+	if(EnorDi == ENABLE)
+	{
+		if(pGPIOx == GPIOA)
+		{
+			GPIOA_PCLK_EN();
+		}
+		else if(pGPIOx == GPIOB)
+		{
+			GPIOB_PCLK_EN();
+		}
+		else if(pGPIOx == GPIOC)
+		{
+			GPIOC_PCLK_EN();
+		}
+		else if(pGPIOx == GPIOD)
+		{
+			GPIOD_PCLK_EN();
+		}
+		else if(pGPIOx == GPIOE)
+		{
+			GPIOE_PCLK_EN();
+		}
+		else if(pGPIOx == GPIOF)
+		{
+			GPIOF_PCLK_EN();
+		}
+		else if(pGPIOx== GPIOG)
+		{
+			GPIOG_PCLK_EN();
+		}
+		else if(pGPIOx == GPIOH)
+		{
+			GPIOH_PCLK_EN();
+		}
+		else
+		{
+			// ToDO disable Clk
+		}
+
+	}
+
+}
 
 
 /*********************************************************************
@@ -48,7 +91,20 @@ void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi);
  */
 
 // Init and De-init
-void GPIO_Init(GPIO_Handle_t *pGPIOHandle);
+void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
+{
+	// Configure the mode of gpio pin
+
+	// Configure the speed
+
+	// Configure the pupd settings
+
+	// Configure the optype
+
+	// Configure the alternate functionality
+
+
+}
 
 /*********************************************************************
  * @fn      		  - GPIO_DeInit
