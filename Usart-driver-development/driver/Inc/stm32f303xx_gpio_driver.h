@@ -64,8 +64,8 @@ typedef struct
  */
 
 #define GPIO_NO_PUPD		0
-#define GPIO_NO_PU			1
-#define GPIO_NO_PD			2
+#define GPIO_PU			    1
+#define GPIO_PD			    2
 
 /*
  * @GPIO_PIN_NUMBER
