@@ -19,17 +19,20 @@
 #include <stdio.h>
 
 
+/*
+ * Processor specific adresses
+ */
+
+#define NVIC_ISER0							((volatile uint32_t*)0xE000E100)
+#define NVIC_ISER1							((volatile uint32_t*)0xE000E104)
+#define NVIC_ISER2							((volatile uint32_t*)0xE000E108)
+#define NVIC_ISER3							((volatile uint32_t*)0xE000E10C)
 
 
-
-
-
-
-
-
-
-
-
+#define NVIC_ICER0							((volatile uint32_t*)0xE000E180)
+#define NVIC_ICER1							((volatile uint32_t*)0xE000E184)
+#define NVIC_ICER2							((volatile uint32_t*)0xE000E188)
+#define NVIC_ICER3							((volatile uint32_t*)0xE000E18C)
 /*
 
  base adresses of Flash and SRAM memories according reference manual
@@ -114,7 +117,7 @@
  */
 
 #define SYSCFG_BASEADDR					    APB2PERIPH_BASE			 // SYSCFG + COMP + OPAMP
-#define ExTI_BASEADDR					    (APB2PERIPH_BASE + 0x0400)
+#define EXTI_BASEADDR					    (APB2PERIPH_BASE + 0x0400)
 #define TIM1_BASEADDR					    (APB2PERIPH_BASE + 0x2C00)
 #define SPI1_BASEADDR					    (APB2PERIPH_BASE + 0x3000)
 #define TIM8_BASEADDR					    (APB2PERIPH_BASE + 0x3400)
@@ -147,6 +150,21 @@
 #define ADC3_ADC4_BASEADDR					(AHB3PERIPH_BASE + 0x0400)
 
 
+
+/*
+ IRQ (Interrupt Request) Number of STM32F303REx MCU
+ */
+
+#define IRQ_NO_EXTI0							6
+#define IRQ_NO_EXTI1							7
+#define IRQ_NO_EXTI2							8
+#define IRQ_NO_EXTI3							9
+#define IRQ_NO_EXTI4							10
+#define IRQ_NO_EXTI9_5							23
+#define IRQ_NO_EXTI15_10						40
+
+
+
 /*
  Generic Macros
  */
@@ -159,8 +177,9 @@
 #define GPIO_PIN_SET						SET
 #define GPIO_PIN_RESET						RESET
 
+// Verify in vector file in datasheet
 
-
+#define IRQ_NO_EXTI
 
 
 
@@ -211,6 +230,16 @@ typedef struct
 }RCC_RegDef_t;
 
 
+typedef struct
+{
+	volatile uint32_t CFGR1;                    // SYSCFG configuration register 1, Offset: 0x00
+	volatile uint32_t RCR;                     	// SYSCFG CCM SRAM protection register, Offset: 0x04
+	volatile uint32_t EXTICR[4];                // SYSCFG external interrupt configuration register 1,2,3,4, Offset: 0x08
+	volatile uint32_t CFGR2;                  	// SYSCFG configuration register 2, Offset: 0x18
+		     uint32_t reserved[8];              // Reserced 0x1C - 4C
+	volatile uint32_t CFGR3;                    // SYSCFG configuration register 2, Offset: 0x50
+}SYSCFG_RegDef_t;
+
 
 
 
@@ -238,6 +267,22 @@ typedef struct
 }USART_RegDef_t;
 
 
+typedef struct
+{
+	volatile uint32_t IMR1;                     // Interrupt mask register1, Offset: 0x00
+	volatile uint32_t EMR1;                     // Event mask register1, Offset: 0x04
+	volatile uint32_t RTSR1;                    // Rising trigger selection register1, Offset: 0x08
+	volatile uint32_t FTSR1;                    // Falling trigger selection register1, Offset: 0x0C
+	volatile uint32_t SWIER1;				    // Software interrupt event register1, Offset: 0x10
+	volatile uint32_t PR1;                      // Pending register1, Offset: 0x14
+			 uint32_t Reserved;					// Reserved, Offset: 0x18
+	volatile uint32_t IMR2;						// Event mask register2, Offset: 0x20
+	volatile uint32_t EMR2;						// Event mask register2, Offset: 0x24
+	volatile uint32_t RTSR2;					// Rising trigger selection register2, Offset 0x28
+	volatile uint32_t FTSR2;					// Falling trigger selection register2, Offset 0x2C
+}EXTI_RegDef_t;
+
+
 
 
 
@@ -248,6 +293,8 @@ typedef struct
 // Typecasted to typedef struc RCC_RegDef_t*
 
 #define RCC 				((RCC_RegDef_t*)RCC_BASEADDR)
+#define EXTI				((EXTI_RegDef_t*)EXTI_BASEADDR)
+#define SYSCFG				((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
 #define USART1_PCCK_EN() 	((RCC->APB2ENR) |= (1 << 14))
 #define USART2_PCCK_EN() 	(RCC->APB1ENR |= (1 << 17))
 #define USART3_PCCK_EN() 	(RCC->APB1ENR |= (1 << 18))
@@ -260,7 +307,7 @@ typedef struct
 /*
  * Clock Enable Macros for GPIO Peripherals peripherals
  */
-// Typecasted to typedef struc RCC_RegDef_t*
+
 
 #define GPIOA_PCLK_EN() 	((RCC->AHBENR) |= (1 << 17))
 #define GPIOB_PCLK_EN() 	((RCC->AHBENR) |= (1 << 18))
@@ -269,8 +316,18 @@ typedef struct
 #define GPIOE_PCLK_EN() 	((RCC->AHBENR) |= (1 << 21))
 #define GPIOF_PCLK_EN() 	((RCC->AHBENR) |= (1 << 22))
 #define GPIOG_PCLK_EN() 	((RCC->AHBENR) |= (1 << 23))
-#define GPIOH_PCLK_EN() 	((RCC->AHBENR) |= (1 << 16))
+#define	GPIOH_PCLK_EN()		((RCC->AHBENR) |= (1 << 16))
+
+
 /*
+ * Clock Enable Macros SYSCFG
+ */
+
+
+#define SYSCFG_PCLK_EN()	((RCC->APB2ENR) |= (1 << 0))
+
+
+
 
 
 

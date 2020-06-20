@@ -19,10 +19,10 @@ void GPIOLEDsetup()
 {
 	   GPIO_Handle_t GPIO_LED;
 	   GPIO_LED.pGPIOx = GPIOA;
-	   GPIO_LED.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN5;
+	   GPIO_LED.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN8;
 	   GPIO_LED.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
 	   GPIO_LED.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
-	   GPIO_LED.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+	   GPIO_LED.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_OD;
 	   GPIO_LED.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
 
 	   GPIO_PeriClockControl(GPIOA, ENABLE);
@@ -58,12 +58,16 @@ int main(void)
    while(1)
    {
 
-	   if(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN13) == 0)
-	   {
-
-	   GPIO_ToggleOutputPin(GPIOA, GPIO_PIN5);
+	   GPIO_ToggleOutputPin(GPIOA, GPIO_PIN8);
 	   delay();
-	   }
+//	   GPIO_WriteToOutputPin(GPIOA, GPIO_PIN8, GPIO_PIN_SET);
+
+//	   if(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN13) == 0)
+//	   {
+//
+//	   GPIO_ToggleOutputPin(GPIOA, GPIO_PIN8);
+//	   delay();
+//	   }
 
 
 

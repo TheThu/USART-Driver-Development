@@ -227,14 +227,14 @@ uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint32_t FlagName)
 			{
 				// Set Transmission register empty flag
 				pUSARTx->ISR |= (1<<USART_FLAG_TXE);
-				return 1;
+
 			}
 
 			else if(FlagName == USART_FLAG_TC)
 			{
 				// Set Transmission complete flag
 				pUSARTx->ISR |= (1<<USART_FLAG_TC);
-				return 1;
+
 			}
 
 			else if(FlagName == USART_FLAG_RXE)
@@ -247,6 +247,7 @@ uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint32_t FlagName)
 			{
 				return 0;
 			}
+			return 1;
 }
 
 

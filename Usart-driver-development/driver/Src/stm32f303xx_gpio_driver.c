@@ -111,7 +111,40 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 	}
 	else
 	{
-		// TODO Interupt Mode
+		// TODO Interrupt Mode
+		if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_FT)
+		{
+			// Configure the FTSR
+			EXTI->FTSR1 |= 1 << (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+			EXTI->RTSR1 &= ~(1 << (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+
+		}
+		else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RT)
+		{
+			// Configure the RTSR
+			EXTI->RTSR1 |= 1 << (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+			EXTI->FTSR1 &= ~(1 << (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+		}
+		else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RFT)
+		{
+			// Configure both FTSR and RTSR
+			EXTI->FTSR1 |= 1 << (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+			EXTI->RTSR1 |= 1 << (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+		}
+		// 2. Configure the GPIO port selection SYSCFG_EXTICR
+
+		// Calculate which EXTICR Register (1...4) needs to be set
+		uint8_t temp1 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 4;
+		// Calculate which EXTICR Register Position needs to be set
+		uint8_t temp2 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 4;
+
+		uint8_t portcode = GPIO_BASEADDR_TO_CODE(pGPIOHandle->pGPIOx);
+
+		// Set external interupt control register for specific Port A....H and GPIO Pinnumber
+		SYSCFG->EXTICR[temp1] = portcode << 4 * temp2;
+
+		// 3. enable the EXTI interrupt delivery using IMR
+		EXTI->IMR1 |= 1 << (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
 	}
 
 
@@ -351,7 +384,46 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
  */
 
 
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
+void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi)
+{
+	if(EnorDi == ENABLE)
+	{
+		if(IRQNumber <=31)
+		{
+			// program  ISER0 register
+			*NVIC_ISER0 |= (1 << IRQNumber);
+		}
+		else if(IRQNumber > 31 && IRQNumber < 64)
+		{
+			// program  ISER1 register
+			*NVIC_ISER1 |= (1 << IRQNumber % 32);
+		}
+		else if((IRQNumber >= 64) && (IRQNumber < 96) )
+		{
+			// program  ISER1 register
+			*NVIC_ISER2 |= (1 << IRQNumber % 64);
+		}
+	}
+	else
+	{
+		if(IRQNumber <=31)
+		{
+			// program  ICER0 register
+			*NVIC_ICER0 |= (1 << IRQNumber);
+		}
+		else if(IRQNumber > 31 && IRQNumber < 64)
+		{
+			// program  ICER1 register
+			*NVIC_ICER1 |= (1 << (IRQNumber % 32) );
+		}
+		else if(IRQNumber >= 64 && IRQNumber < 96)
+		{
+			// program  ICER2 register
+			*NVIC_ICER2 |= (1 << IRQNumber % 64);
+		}
+	}
+
+}
 
 
 /*********************************************************************
@@ -368,3 +440,57 @@ void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
  * @Note              -  none
  */
 void GPIO_IRQHandling(uint8_t PinNumber);
+
+
+
+u_int8_t GPIO_BASEADDR_TO_CODE(GPIO_RegDef_t *pGPIOx)
+{
+	uint8_t temp;
+	if(pGPIOx == GPIOA)
+	{
+		temp = 0;
+		return temp;
+	}
+	else if(pGPIOx == GPIOB)
+	{
+		temp = 1;
+		return temp;
+	}
+	else if(pGPIOx == GPIOC)
+	{
+		temp = 2;
+		return temp;
+	}
+	else if(pGPIOx == GPIOD)
+	{
+		temp = 3;
+		return temp;
+	}
+	else if(pGPIOx == GPIOE)
+	{
+		temp = 4;
+		return temp;
+	}
+	else if(pGPIOx == GPIOF)
+	{
+		temp = 5;
+		return temp;
+	}
+	else if(pGPIOx== GPIOG)
+	{
+		temp = 6;
+		return temp;
+	}
+	else if(pGPIOx == GPIOH)
+	{
+		temp = 7;
+		return temp;
+	}
+	else
+	{
+
+		// No such Port
+		return -1;
+	}
+
+}
