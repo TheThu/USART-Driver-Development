@@ -384,12 +384,19 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
  */
 
 
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi)
+void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi)
 {
 	if(EnorDi == ENABLE)
 	{
+
+		/*
+		Each register is 32 Bit wide differentiate which ISER Register should written
+		*/
+
 		if(IRQNumber <=31)
 		{
+
+
 			// program  ISER0 register
 			*NVIC_ISER0 |= (1 << IRQNumber);
 		}
@@ -441,7 +448,26 @@ void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi)
  */
 void GPIO_IRQHandling(uint8_t PinNumber);
 
+void GPIO_IRQPriorityConfig(uint8_t IRQPriority)
+{
+	/*
+	 32 Register is divided by 4 sections
+	 */
 
+	// Find out IPR Register
+	uint8_t iPRx_offset = IRQPriority/4;
+
+	// Find section
+	uint8_t iPRx_section = IRQPriority % 4;
+
+	/* times 4 registers are 32 Bits next adress would be + 4 Bytes, times 8 section are 8 Bits wide
+
+	*/
+
+// Some uC only the upper four bits are used in the 8 Bitfield, the shiftamount is MCU specific
+	uint8_t shiftamount = 8 * iPRx_section + (8 - NO_PR_BITS_IMPLEMENTED);
+	*(NVIC_IPR_BASE_ADDR + iPRx_offset * 4) |= (IRQPriority << shiftamount);
+}
 
 u_int8_t GPIO_BASEADDR_TO_CODE(GPIO_RegDef_t *pGPIOx)
 {
