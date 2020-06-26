@@ -446,7 +446,17 @@ void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi)
  *
  * @Note              -  none
  */
-void GPIO_IRQHandling(uint8_t PinNumber);
+void GPIO_IRQHandling(uint8_t PinNumber)
+{
+	// Handling IRQ
+		// Clear the exti pr register corresponding to the pin number
+
+		if(EXTI->PR1 & (1 << PinNumber))
+		{
+			// Clear
+			EXTI->PR1 |= (1 << PinNumber);
+		}
+}
 
 void GPIO_IRQPriorityConfig(uint8_t IRQPriority)
 {

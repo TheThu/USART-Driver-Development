@@ -186,9 +186,9 @@
 #define GPIO_PIN_SET						SET
 #define GPIO_PIN_RESET						RESET
 
-// Verify in vector file in datasheet
 
-#define IRQ_NO_EXTI
+
+
 
 
 

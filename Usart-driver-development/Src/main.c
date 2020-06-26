@@ -43,7 +43,12 @@ void GPIOButtonsetup()
 }
 
 
+void EXTIO_IRQHandler(void)
+{
 
+	GPIO_IRQHandling(0);
+
+}
 
 int main(void)
 {
