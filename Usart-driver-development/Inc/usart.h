@@ -12,6 +12,11 @@
 #include <stm32f303xx.h>
 #include <stdbool.h>
 #include <stdio.h>
+
+
+
+
+
 // USART_Mode
 
 #define USART_MODE_ONLY_TX 0
@@ -116,6 +121,13 @@ void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi);
 // Calculate Baudrate
 
 void USART_SetBaudRate(USART_RegDef_t *pUSARTx,uint32_t BaudRate);
+
+
+// UART2 GPIO Init
+void USART2_GPIOInit(void);
+
+// Initilize USART2 specific parameters
+void USART2_Init();
 
 
 // Init and DeInit

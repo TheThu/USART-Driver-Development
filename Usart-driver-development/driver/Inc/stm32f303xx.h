@@ -378,6 +378,7 @@ typedef struct
 
 #include <stm32f303xx_gpio_driver.h>
 #include <stm32f303xx_rcc_driver.h>
+#include <usart.h>
 
 
 #endif /* STM32F303xx_H_ */

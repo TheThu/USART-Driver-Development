@@ -6,6 +6,22 @@
  */
 #include <usart.h>
 #include <stm32f303xx.h>
+#include <string.h>
+
+extern USART_Handle_t USART2_handle;
+
+void USART2_Init()
+{
+
+	USART2_handle.pUSARTx = USART2;
+	USART2_handle.USART_Config.USART_Baud = USART_STD_BAUD_115200;
+	USART2_handle.USART_Config.USART_HWFlowControl = USART_HW_FLOW_CTRL_NONE;
+	USART2_handle.USART_Config.USART_Mode = USART_MODE_ONLY_TX;
+	USART2_handle.USART_Config.USART_NoOfStopBits = USART_STOPBITS_1;
+	USART2_handle.USART_Config.USART_Wordlength = USART_WORDLEN_8BITS;
+	USART2_handle.USART_Config.USART_ParityControl = USART_PARITY_EN_DISABLE;
+	USART_Init(&USART2_handle);
+}
 
 void USART_Init(USART_Handle_t *pUSARTHandle){
 
@@ -219,6 +235,48 @@ void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_
 
 
 
+void USART2_GPIOInit()
+{
+	GPIO_Handle_t USART2_Tx;
+	// memset(&USART2_Tx,0, sizeof(USART2_Tx));
+	USART2_Tx.pGPIOx = GPIOA;
+
+	USART2_Tx.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFCT;
+
+	// Push and Pull configuration
+	USART2_Tx.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+
+	// Internal Pull-up resistance
+	USART2_Tx.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PU;
+	USART2_Tx.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
+
+    USART2_Tx.GPIO_PinConfig.GPIO_PinAltFunMode = 7;
+
+
+
+    // PA2 USART2_Tx
+	USART2_Tx.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN2;
+
+	// Enable GPIOA Clk
+	GPIO_PeriClockControl(GPIOA, ENABLE);
+
+	GPIO_Init(&USART2_Tx);
+
+
+	GPIO_Handle_t USART2_Rx;
+
+	USART2_Rx.pGPIOx = GPIOA;
+	USART2_Rx.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFCT;
+	USART2_Rx.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+	USART2_Rx.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PU;
+	USART2_Rx.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
+    USART2_Rx.GPIO_PinConfig.GPIO_PinAltFunMode = 7;
+
+    // PA3 USART2_Rx
+	USART2_Rx.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN3;
+
+	GPIO_Init(&USART2_Rx);
+}
 
 
 uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint32_t FlagName)

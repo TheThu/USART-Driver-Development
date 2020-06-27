@@ -104,9 +104,12 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 		temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
 
 		// Clear Bit-fields for gpios before setting Bit-fields
-		pGPIOHandle->pGPIOx->MODER &= ~(0x3 << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+		//pGPIOHandle->pGPIOx->MODER &= ~(0x3 << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
 		// Set Bit-fields
+
 		pGPIOHandle->pGPIOx->MODER |= temp;
+
+
 
 	}
 
@@ -152,23 +155,24 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 
 //
 //	// Configure the speed
-	temp = 0;
 
-	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeed <= (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+
+	 temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeed << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
 
 	// Clear Bit-fields for gpios before setting Bit-fields
 	pGPIOHandle->pGPIOx->OSPEEDR &= ~(0x3 << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
 	// Set Bitfields
+
 	pGPIOHandle->pGPIOx->OSPEEDR |= temp;
 
 	// Configure the pupd settings
 	temp = 0;
-	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinPuPdControl <= (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinPuPdControl << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
 	pGPIOHandle->pGPIOx->PUPDR |= temp;
 
 	// Configure the optype
 	temp = 0;
-	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType <= (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType << (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
 	pGPIOHandle->pGPIOx->OTYPER &= ~(1 << (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
 	pGPIOHandle->pGPIOx->OTYPER |= temp;
 
@@ -184,7 +188,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 		temp2 =  pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 8;
 
 		// times 4 because 4 Bit-field for alternate function mode
-		pGPIOHandle->pGPIOx->AFR[temp1] &= ~(0xF << (4 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+		pGPIOHandle->pGPIOx->AFR[temp1] &= ~(0xF << (4 * temp2));
 		pGPIOHandle->pGPIOx->AFR[temp1] |= ( pGPIOHandle->GPIO_PinConfig.GPIO_PinAltFunMode << (4 * temp2));
 
 

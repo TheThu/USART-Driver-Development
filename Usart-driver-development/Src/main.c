@@ -8,11 +8,18 @@
 */
 #include <main.h>
 #include <stm32f303xx.h>
+#include <String.h>
+#include <usart.h>
+
+
+char msg[1024] = "UART_Tx Testing ... \n\r";
 
 void delay(void)
 {
 	for(uint32_t i = 0; i < 500000; i++);
 }
+
+
 
 
 void GPIOLEDsetup()
@@ -51,6 +58,8 @@ void GPIOButtonsetup()
 
 
 
+USART_Handle_t USART2_handle;
+
 
 
 void EXTI15_10_IRQHandler(void)
@@ -61,23 +70,20 @@ void EXTI15_10_IRQHandler(void)
 
 int main(void)
 {
-
-	GPIOButtonsetup();
-	GPIOLEDsetup();
-
-	GPIO_IRQConfig(IRQ_NO_EXTI15_10, ENABLE);
-	GPIO_IRQPriorityConfig(IRQ_NO_EXTI15_10, NVIC_IRQ_PRI15);
-
-	  while(1)
-	   {
+	USART2_GPIOInit();
+	USART2_Init();
 
 
 
-	   }
 
 
+	while(1)
+	{
+		USART_SendData(&USART2_handle, (uint8_t*)msg, strlen(msg));
+	}
 
-	  return 0;
+
+	return 0;
 
 
 
