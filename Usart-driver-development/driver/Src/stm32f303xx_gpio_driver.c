@@ -94,7 +94,7 @@ void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 // Init and De-init
 void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 {
-	uint32_t temp; // temp register
+	uint32_t temp = 0; // temp register
 	// Configure the mode of gpio pin
 	if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG)
 	{
@@ -106,9 +106,10 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 		// Clear Bit-fields for gpios before setting Bit-fields
 		pGPIOHandle->pGPIOx->MODER &= ~(0x3 << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
 		// Set Bit-fields
-		pGPIOHandle->pGPIOx->MODER = temp;
+		pGPIOHandle->pGPIOx->MODER |= temp;
 
 	}
+
 	else
 	{
 		// TODO Interrupt Mode
@@ -147,8 +148,8 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 		EXTI->IMR1 |= 1 << (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
 	}
 
-
-	// Configure the speed
+//
+//	// Configure the speed
 	temp = 0;
 
 	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeed <= (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));

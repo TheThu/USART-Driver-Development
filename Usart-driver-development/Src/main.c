@@ -19,10 +19,10 @@ void GPIOLEDsetup()
 {
 	   GPIO_Handle_t GPIO_LED;
 	   GPIO_LED.pGPIOx = GPIOA;
-	   GPIO_LED.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN8;
+	   GPIO_LED.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN5;
 	   GPIO_LED.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
 	   GPIO_LED.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
-	   GPIO_LED.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_OD;
+	   GPIO_LED.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
 	   GPIO_LED.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
 
 	   GPIO_PeriClockControl(GPIOA, ENABLE);
@@ -33,59 +33,57 @@ void GPIOLEDsetup()
 void GPIOButtonsetup()
 {
 	GPIO_Handle_t GPIO_USER_BUTTON;
+
+
 	GPIO_USER_BUTTON.pGPIOx = GPIOC;
 	GPIO_USER_BUTTON.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN13;
 	GPIO_USER_BUTTON.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IN;
-	GPIO_USER_BUTTON.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
+	GPIO_USER_BUTTON.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_MEDIUM;
 	GPIO_USER_BUTTON.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
 	GPIOC_PCLK_EN();
 	GPIO_Init(&GPIO_USER_BUTTON);
 }
 
 
-void EXTIO_IRQHandler(void)
+
+
+
+
+void EXTI15_10_IRQHandler(void)
 {
-
-	GPIO_IRQHandling(0);
-
+	GPIO_IRQHandling(GPIO_PIN13);
+	GPIO_ToggleOutputPin(GPIOA, GPIO_PIN5);
 }
 
 int main(void)
 {
-
-
 
 	GPIOButtonsetup();
 	GPIOLEDsetup();
 
 
 
-   while(1)
-   {
-
-	   GPIO_ToggleOutputPin(GPIOA, GPIO_PIN8);
-	   delay();
-//	   GPIO_WriteToOutputPin(GPIOA, GPIO_PIN8, GPIO_PIN_SET);
-
-//	   if(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN13) == 0)
-//	   {
-//
-//	   GPIO_ToggleOutputPin(GPIOA, GPIO_PIN8);
-//	   delay();
-//	   }
+	  while(1)
+	   {
 
 
+		   if(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN13) == 0)
+		   {
+
+		   GPIO_ToggleOutputPin(GPIOA, GPIO_PIN5);
+		   delay();
+		   }
+	   }
+//	GPIO_IRQConfig(IRQ_NO_EXTI15_10, ENABLE);
+//	GPIO_IRQPriorityConfig(NVIC_IRQ_PRI15);
 
 
-
-	   //GPIO_WriteToOutputPin(GPIOA, GPIO_PIN5, GPIO_PIN_SET);
-
-   }
+	  return 0;
 
 
 
 
-   return 0;
+
 
 };
 
