@@ -8,11 +8,11 @@
 */
 #include <main.h>
 #include <stm32f303xx.h>
-#include <String.h>
+#include <string.h>
 #include <usart.h>
 
 
-char msg[1024] = "UART_Tx Testing ... \n\r";
+ char pData[1000] =  "HelloWorld";
 
 void delay(void)
 {
@@ -48,9 +48,9 @@ void GPIOButtonsetup()
 
 	GPIO_USER_BUTTON.pGPIOx = GPIOC;
 	GPIO_USER_BUTTON.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN13;
-	GPIO_USER_BUTTON.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IT_FT;
+	GPIO_USER_BUTTON.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IN;
 	GPIO_USER_BUTTON.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_MEDIUM;
-	GPIO_USER_BUTTON.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PU;
+	GPIO_USER_BUTTON.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
 	GPIOC_PCLK_EN();
 	GPIO_Init(&GPIO_USER_BUTTON);
 }
@@ -72,6 +72,8 @@ int main(void)
 {
 	USART2_GPIOInit();
 	USART2_Init();
+	GPIOLEDsetup();
+	GPIOButtonsetup();
 
 
 
@@ -79,7 +81,17 @@ int main(void)
 
 	while(1)
 	{
-		USART_SendData(&USART2_handle, (uint8_t*)msg, strlen(msg));
+
+
+
+
+		if(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN13) == 0){
+
+		USART_SendData(&USART2_handle, (uint8_t*)pData, strlen(pData));
+		delay();
+		}
+
+
 	}
 
 

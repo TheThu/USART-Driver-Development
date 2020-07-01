@@ -73,6 +73,7 @@
 #define USART_CR1_PCE						10
 #define USART_CR1_PS						9   // Parity Selection Bit-field
 #define USART_CR1_OVER8 					15  // Oversampling Bit field
+#define USART_CR1_UE 					    0  // USART Enable
 
 // Macros for Register Bit-fields for CR2-Register
 #define USART_CR2_STOP						12 	// Stop bits

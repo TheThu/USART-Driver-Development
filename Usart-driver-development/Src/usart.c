@@ -40,7 +40,7 @@ void USART_Init(USART_Handle_t *pUSARTHandle){
 		// Mask out Read Enable (RE) Bit-field
 		tempreg |= (1 << USART_CR1_RE);
 		// Set Read Enable Bit (RE)
-		pUSARTHandle->pUSARTx->CR1 = tempreg;
+		pUSARTHandle->pUSARTx->CR1 |= tempreg;
 	}
 
 	else if(pUSARTHandle->USART_Config.USART_Mode == USART_MODE_ONLY_TX)
@@ -48,7 +48,7 @@ void USART_Init(USART_Handle_t *pUSARTHandle){
 		// Mask out Transmit Enable (TE) Bit-field
 		tempreg |= (1 << USART_CR1_TE);
 		// Set Transmit Enable (TE) Bit-field
-		pUSARTHandle->pUSARTx->CR1 = tempreg;
+		pUSARTHandle->pUSARTx->CR1 |= tempreg;
 	}
 
 	else if(pUSARTHandle->USART_Config.USART_Mode == USART_MODE_TXRX)
@@ -61,7 +61,7 @@ void USART_Init(USART_Handle_t *pUSARTHandle){
 		tempreg|= pUSARTHandle->USART_Config.USART_Wordlength << USART_CR1_M0;
 
 		// Set World length M0 Bit-field
-		pUSARTHandle->pUSARTx->CR1 = tempreg;
+		pUSARTHandle->pUSARTx->CR1 |= tempreg;
 
 	if(pUSARTHandle->USART_Config.USART_ParityControl == USART_PARITY_EN_EVEN)
 	{
@@ -71,7 +71,7 @@ void USART_Init(USART_Handle_t *pUSARTHandle){
 
 		// Set EVEN-Parity
 		tempreg |= (1 << USART_CR1_PS);
-		pUSARTHandle->pUSARTx->CR1 = tempreg;
+		pUSARTHandle->pUSARTx->CR1 |= tempreg;
 
 	}
 
@@ -109,6 +109,10 @@ void USART_Init(USART_Handle_t *pUSARTHandle){
 		// Set RTSE-Bitfield
 		pUSARTHandle->pUSARTx->CR3 = tempreg;
 	}
+
+
+	USART_SetBaudRate(pUSARTHandle->pUSARTx,pUSARTHandle->USART_Config.USART_Baud);
+	 pUSARTHandle->pUSARTx->CR1 |= 1 <<USART_CR1_UE;
 }
 
 
@@ -244,10 +248,10 @@ void USART2_GPIOInit()
 	USART2_Tx.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFCT;
 
 	// Push and Pull configuration
-	USART2_Tx.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+	// USART2_Tx.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
 
 	// Internal Pull-up resistance
-	USART2_Tx.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PU;
+	USART2_Tx.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
 	USART2_Tx.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
 
     USART2_Tx.GPIO_PinConfig.GPIO_PinAltFunMode = 7;
@@ -281,17 +285,20 @@ void USART2_GPIOInit()
 
 uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint32_t FlagName)
 {
+			uint32_t temp;
 			if(FlagName == USART_FLAG_TXE)
 			{
+				temp = (1<<USART_FLAG_TXE);
 				// Set Transmission register empty flag
-				pUSARTx->ISR |= (1<<USART_FLAG_TXE);
+				pUSARTx->ISR |= temp;
 
 			}
 
 			else if(FlagName == USART_FLAG_TC)
 			{
 				// Set Transmission complete flag
-				pUSARTx->ISR |= (1<<USART_FLAG_TC);
+				temp = (1<<USART_FLAG_TC);
+				pUSARTx->ISR |= temp;
 
 			}
 
@@ -335,41 +342,34 @@ void USART_SetBaudRate(USART_RegDef_t *pUSARTx,uint32_t BaudRate)
 	if(pUSARTx->CR1 & (1 << USART_CR1_OVER8))
 	{
 		//OVER8 = 1, over sampling by 8, dealing with integer
-		usartdiv = 100 * PCLKx/(8 * BaudRate);
+		usartdiv = 100 * 2 * PCLKx/(BaudRate);
+
+		// Calculate the Mantissa part
+		M_part = usartdiv/100;
+
+		// Place the Mantissa part in appropriate bit position, refer USART_BRR [15:4] Bit-fields
+		tempreg = M_part << 4;
+
+		// Extract the fraction part
+		F_part = (usartdiv - (M_part * 100));
+
+		//Over8 = 1, over sampling by 8, + 50 rounding
+		F_part = ( ( (F_part * usartdiv) + 50 ) / 100 ) & ((uint8_t)0x07);
+
+		// place the fractional part in appropriate bit position, refer USART_BRR
+		tempreg |= F_part;
+		//copy the value of tempreg in to BRR register
+		pUSARTx->BRR = tempreg;
 	}
 	else
 	{
 		// OVER8 = 0, over sampling by 16
-		usartdiv = 100 * PCLKx/(16 * BaudRate);
+		usartdiv = PCLKx/(BaudRate);
+		tempreg = usartdiv;
 
+		//copy the value of tempreg in to BRR register
+		pUSARTx->BRR |= tempreg;
 	}
-
-	// Calculate the Mantissa part
-	M_part = usartdiv/100;
-
-	// Place the Mantissa part in appropriate bit position, refer USART_BRR [15:4] Bit-fields
-	tempreg |= M_part << 4;
-
-	// Extract the fraction part
-	F_part = (usartdiv - (M_part * 100));
-
-	// calculate the final fractional
-	if(pUSARTx->CR1 & (1<< USART_CR1_OVER8))
-	{
-		//Over8 = 1, over sampling by 8
-		F_part = ( ( (F_part * usartdiv) + 50 ) / 100 ) & ((uint8_t)0x07);
-	}
-	else
-	{
-		//over sampling by 16
-		F_part = ( ( (F_part * usartdiv) + 50 ) / 100 ) & ((uint8_t)0x07);
-	}
-
-	// place the fractional part in appropriate bit position, refer USART_BRR
-	tempreg |= F_part;
-	//copy the value of tempreg in to BRR register
-	pUSARTx->BRR = tempreg;
-
 
 }
 

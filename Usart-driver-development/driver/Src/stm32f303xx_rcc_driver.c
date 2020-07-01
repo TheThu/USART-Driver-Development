@@ -114,6 +114,7 @@ uint32_t RCC_GetPCLK2Value(void)
 	{
 		ahb_prescaler = AHB_Prescaler[temp - 8];
 	}
+
 	temp = (RCC->CFGR >> 11 ) & 0x3;
 
 	if(temp < 4)

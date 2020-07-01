@@ -290,8 +290,9 @@ typedef struct
 	volatile uint32_t RTOR;                     // Receiver timeout register, Offset: 0x14
 	volatile uint32_t RQR;                      // Request register, Offset: 0x18
 	volatile uint32_t ISR;                      // Interrupt and status register, Offset: 0x1C
-	volatile uint32_t RDR;                      // Receive data register, Offset: 0x20
-	volatile uint32_t TDR;                      // Transmit data register, Offset: 0x24
+	volatile uint32_t ICR;						// Interrupt flag clear register (USART_ICR), Offset: 0x20
+	volatile uint32_t RDR;                      // Receive data register, Offset: 0x24
+	volatile uint32_t TDR;                      // Transmit data register, Offset: 0x28
 }USART_RegDef_t;
 
 
