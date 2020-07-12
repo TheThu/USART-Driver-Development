@@ -12,11 +12,11 @@
 #include <usart.h>
 
 
- char pData[1000] =  "HelloWorld";
+char pData[30] =  "UART Tx testing...\n\r";
 
 void delay(void)
 {
-	for(uint32_t i = 0; i < 500000; i++);
+	for(uint32_t i = 0; i < 500000/2; i++);
 }
 
 
@@ -38,6 +38,23 @@ void GPIOLEDsetup()
 	   GPIO_Init(&GPIO_LED);
 }
 
+void GPIOCLKsetup()
+{
+	GPIO_Handle_t GPIO_ClkOutput;
+
+	// local will contain garbage value when Output type is not assigned
+	memset(&GPIO_ClkOutput,0, sizeof(GPIO_ClkOutput));
+
+	GPIO_ClkOutput.pGPIOx = GPIOA;
+	GPIO_ClkOutput.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN8;
+	GPIO_ClkOutput.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFCT;
+	GPIO_ClkOutput.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
+//	GPIO_USER_BUTTON.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
+	GPIOA_PCLK_EN();
+	GPIO_Init(&GPIO_ClkOutput);
+}
+
+
 
 void GPIOButtonsetup()
 {
@@ -56,8 +73,6 @@ void GPIOButtonsetup()
 }
 
 
-
-
 USART_Handle_t USART2_handle;
 
 
@@ -70,26 +85,27 @@ void EXTI15_10_IRQHandler(void)
 
 int main(void)
 {
-	USART2_GPIOInit();
-	USART2_Init();
-	GPIOLEDsetup();
-	GPIOButtonsetup();
+//	USART2_GPIOInit();
+//	USART2_Init();
+//	GPIOLEDsetup();
+//	GPIOButtonsetup();
 
 
 
-
-
+	RCC->CFGR  |= (0x5 << 24);
+	GPIOCLKsetup();
 	while(1)
 	{
 
 
 
 
-		if(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN13) == 0){
+//
+//		if(GPIO_ReadFromInputPin(GPIOC, GPIO_PIN13) == 0){
+//			delay();
+//		USART_SendData(&USART2_handle,(uint8_t*)pData,strlen(pData));
+//		}
 
-		USART_SendData(&USART2_handle, (uint8_t*)pData, strlen(pData));
-		delay();
-		}
 
 
 	}

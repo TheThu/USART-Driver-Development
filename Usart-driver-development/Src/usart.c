@@ -158,7 +158,8 @@ void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
 // Data, Send and Receive
 void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t Len)
 {
-	uint16_t *pData;
+	uint8_t *pData;
+
 
 	for(uint32_t i = 0;i < Len; i++)
 	{
@@ -189,8 +190,10 @@ void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t L
 
 		else
 		{
+
+
 			// Masking out 8 Bits
-			pUSARTHandle->pUSARTx->TDR = *pTxBuffer & 0x00FF;
+			pUSARTHandle->pUSARTx->TDR = (*pTxBuffer & (uint8_t)0xFFU);
 			// increment the buffer adress
 			pTxBuffer++;
 		}
@@ -248,10 +251,10 @@ void USART2_GPIOInit()
 	USART2_Tx.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFCT;
 
 	// Push and Pull configuration
-	// USART2_Tx.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+	 USART2_Tx.GPIO_PinConfig.GPIO_PinOPType = GPIO_NO_PUPD;
 
 	// Internal Pull-up resistance
-	USART2_Tx.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
+	//USART2_Tx.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PU;
 	USART2_Tx.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
 
     USART2_Tx.GPIO_PinConfig.GPIO_PinAltFunMode = 7;
@@ -283,36 +286,14 @@ void USART2_GPIOInit()
 }
 
 
-uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint32_t FlagName)
+uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint8_t StatusFlagName)
 {
-			uint32_t temp;
-			if(FlagName == USART_FLAG_TXE)
-			{
-				temp = (1<<USART_FLAG_TXE);
-				// Set Transmission register empty flag
-				pUSARTx->ISR |= temp;
+    if(pUSARTx->ISR & StatusFlagName)
+    {
+    	return SET;
+    }
 
-			}
-
-			else if(FlagName == USART_FLAG_TC)
-			{
-				// Set Transmission complete flag
-				temp = (1<<USART_FLAG_TC);
-				pUSARTx->ISR |= temp;
-
-			}
-
-			else if(FlagName == USART_FLAG_RXE)
-			{
-				// Set Receive data register empty flag
-				pUSARTx->ISR |= (1<<USART_FLAG_RXE);
-			}
-
-			else
-			{
-				return 0;
-			}
-			return 1;
+   return RESET;
 }
 
 

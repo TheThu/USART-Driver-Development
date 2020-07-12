@@ -83,13 +83,15 @@
 #define USART_CR3_RTSE						9 	// RTS Enable RTS output enabled, data is only requested when there is space in the receive buffer. The transmission of data is expected to cease after the current character has been transmitted.The RTS output is asserted (pulled to 0) when data can be received.
 
 // Flags for Transmission and Reception
-#define USART_FLAG_TC						6   // USART Transmission complete flag
-#define USART_FLAG_TXE						7	// USART Transmit data register empty flag
-#define USART_FLAG_RXE					    5   // USART Read data register not empty
+#define USART_ISR_TC						6   // USART Transmission complete flag
+#define USART_ISR_TXE						7	// USART Transmit data register empty flag
+#define USART_ISR_RXE					    5   // USART Read data register not empty
 
 
 
-
+#define USART_FLAG_TXE 			( 1 << USART_ISR_TXE)
+#define USART_FLAG_RXNE 		( 1 << USART_ISR_RXNE)
+#define USART_FLAG_TC 			( 1 << USART_ISR_TC)
 
 
 // Configuration for USARTx peripheral
@@ -149,7 +151,7 @@ void USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 
 // Other Peripheral Control APIs
 void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi);
-uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint32_t FlagName);
+uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint8_t StatusFlagName);
 void USART_ClearFlag(USART_RegDef_t *pUSARTx, uint16_t StatusFlagName);
 
 //  Application Callback
